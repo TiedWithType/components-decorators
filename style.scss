@@ -1,0 +1,21 @@
+:root {
+  font-family: "Comfortaa", sans-serif;
+
+  @media (prefers-color-scheme: dark) {
+    color: #fff;
+    background-color: #212121;
+  }
+}
+
+html,
+body {
+  block-size: 100%;
+  display: grid;
+  place-content: center;
+  place-items: center;
+}
+
+app-root {
+  text-align: center;
+  padding-inline: 20px;
+}

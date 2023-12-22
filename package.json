@@ -1,0 +1,13 @@
+{
+  "name": "node-starter",
+  "private": true,
+  "scripts": {
+    "start": "vite",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "sass": "^1.69.5",
+    "vite": "^5.0.10",
+    "vite-tsconfig-paths": "^4.2.2"
+  }
+}
