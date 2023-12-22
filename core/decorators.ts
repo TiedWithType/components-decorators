@@ -30,7 +30,7 @@ export const Component = (selector: string): ClassDecorator => {
     });
 
     eventMap.forEach(
-      async (event: () => Promise<void>): Promise<void> => await event()
+      async (event: () => Promise<void>): Promise<void> => await event(),
     );
 
     return target;
@@ -41,7 +41,7 @@ export const eventListener = (eventName: string): MethodDecorator => {
   return (
     target: Object,
     _propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ): void => {
     const originalMethod: any = descriptor.value;
 
