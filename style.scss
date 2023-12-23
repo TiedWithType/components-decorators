@@ -1,5 +1,6 @@
 :root {
   font-family: 'Comfortaa', sans-serif;
+  color: #212121;
 
   @media (prefers-color-scheme: dark) {
     color: #fff;
@@ -18,4 +19,12 @@ app-root {
   place-self: center;
   text-align: center;
   font-size: 0.8rem;
+  cursor: pointer;
+  pre {
+    text-wrap: wrap;
+    span {
+      font-family: 'Comfortaa';
+      font-weight: 700;
+    }
+  }
 }

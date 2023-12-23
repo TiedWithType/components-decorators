@@ -1,15 +1,25 @@
+type IComponentOptions = {
+  selector: string;
+  dependencies?: Function[];
+};
+
 export type IComponent = {
-  render(): string;
+  get render(): string;
 };
 
 export const eventMap: (() => Promise<void>)[] = [];
 
-export const Component = (selector: string): ClassDecorator => {
+export const Component = (options: IComponentOptions): ClassDecorator => {
   return (target: Function): any => {
-    const object: Object = Reflect.construct(target, []);
+    const object: Object = Reflect.construct(
+      target,
+      options.dependencies?.map((dependency: Function) =>
+        Reflect.construct(dependency, [])
+      ) || []
+    );
     const proto: IComponent = target.prototype;
 
-    Reflect.set(proto, 'nodes', document.querySelectorAll(selector));
+    Reflect.set(proto, 'nodes', document.querySelectorAll(options.selector));
 
     Reflect.ownKeys(object).forEach((key: string | symbol): void => {
       let value = Reflect.get(object, key);
@@ -19,18 +29,18 @@ export const Component = (selector: string): ClassDecorator => {
         set: (newValue: any): void => {
           Reflect.get(proto, 'nodes').forEach((node: HTMLElement): void => {
             value = newValue || Reflect.get(object, key);
-            Reflect.set(node, 'innerHTML', proto.render());
+            Reflect.set(node, 'innerHTML', proto.render);
           });
         },
       });
     });
 
     Reflect.get(proto, 'nodes').forEach((node: HTMLElement): void => {
-      Reflect.set(node, 'innerHTML', proto.render());
+      Reflect.set(node, 'innerHTML', proto.render);
     });
 
     eventMap.forEach(
-      async (event: () => Promise<void>): Promise<void> => await event(),
+      async (event: () => Promise<void>): Promise<void> => await event()
     );
 
     return target;
@@ -41,7 +51,7 @@ export const eventListener = (eventName: string): MethodDecorator => {
   return (
     target: Object,
     _propertyKey: string | symbol,
-    descriptor: PropertyDescriptor,
+    descriptor: PropertyDescriptor
   ): void => {
     const originalMethod: any = descriptor.value;
 
@@ -52,10 +62,28 @@ export const eventListener = (eventName: string): MethodDecorator => {
         Reflect.set(target, '__eventAttached', true);
         node.addEventListener(eventName, (event: Event) => {
           originalMethod.apply(target, [event.target]);
+          Reflect.set(node, 'innerHTML', Reflect.get(target, 'render'));
         });
       });
     };
 
     eventMap.push(descriptor.value);
   };
+};
+
+export const Service = <T extends { new (...args: any[]): {} }>(
+  constructor: T
+): T => {
+  let instance: InstanceType<T> | null = null;
+
+  const handler: ProxyHandler<any> = {
+    construct(target, args) {
+      if (!instance) {
+        instance = Reflect.construct(target, args) as InstanceType<T>;
+      }
+      return instance;
+    },
+  };
+
+  return new Proxy(constructor, handler) as T;
 };
