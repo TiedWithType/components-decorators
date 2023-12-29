@@ -11,39 +11,49 @@ export const eventMap: (() => Promise<void>)[] = [];
 
 export const Component = (options: IComponentOptions): ClassDecorator => {
   return (target: Function): any => {
-    const object: Object = Reflect.construct(
-      target,
-      options.dependencies?.map((dependency: Function) =>
-        Reflect.construct(dependency, [])
-      ) || []
-    );
-    const proto: IComponent = target.prototype;
+    try {
+      const object: Object = Reflect.construct(
+        target,
+        options.dependencies?.map((dependency: Function) =>
+          Reflect.construct(dependency, [])
+        ) || []
+      );
+      const proto: IComponent = target.prototype;
 
-    Reflect.set(proto, 'nodes', document.querySelectorAll(options.selector));
+      Reflect.set(proto, 'nodes', document.querySelectorAll(options.selector));
 
-    Reflect.ownKeys(object).forEach((key: string | symbol): void => {
-      let value = Reflect.get(object, key);
+      Reflect.ownKeys(object).forEach((key: string | symbol): void => {
+        let value = Reflect.get(object, key);
 
-      Reflect.defineProperty(proto, key, {
-        get: (): any => value,
-        set: (newValue: any): void => {
-          Reflect.get(proto, 'nodes').forEach((node: HTMLElement): void => {
-            value = newValue || Reflect.get(object, key);
-            Reflect.set(node, 'innerHTML', proto.render);
-          });
-        },
+        Reflect.defineProperty(proto, key, {
+          get: (): any => value,
+          set: (newValue: any): void => {
+            Reflect.get(proto, 'nodes').forEach((node: HTMLElement): void => {
+              value = newValue || Reflect.get(object, key);
+              Reflect.set(node, 'innerHTML', proto.render);
+            });
+          },
+        });
       });
-    });
 
-    Reflect.get(proto, 'nodes').forEach((node: HTMLElement): void => {
-      Reflect.set(node, 'innerHTML', proto.render);
-    });
+      Reflect.get(proto, 'nodes').forEach((node: HTMLElement): void => {
+        Reflect.set(node, 'innerHTML', proto.render);
+      });
 
-    eventMap.forEach(
-      async (event: () => Promise<void>): Promise<void> => await event()
-    );
+      eventMap.forEach(
+        async (event: () => Promise<void>): Promise<void> => await event()
+      );
 
-    return target;
+      return target;
+    } catch (error: any) {
+      Reflect.set(
+        document.body,
+        'innerHTML',
+        `
+        <div style='place-self: center; color: #F44336; text-align: center; font-weight: 900'>${error}</div>
+      `
+      );
+    }
   };
 };
 

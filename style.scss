@@ -19,6 +19,7 @@ app-root {
   place-self: center;
   text-align: center;
   font-size: 0.8rem;
+  contain: content;
   cursor: pointer;
   pre {
     text-wrap: wrap;

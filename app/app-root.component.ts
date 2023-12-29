@@ -7,7 +7,7 @@ import {
 
 @Service
 class MyService {
-  title: string = Service.name;
+  title: string = MyService.name;
 }
 
 @Component({ selector: 'app-root', dependencies: [MyService] })
