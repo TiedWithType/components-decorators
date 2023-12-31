@@ -1,26 +1,17 @@
-import {
-  Component,
-  IComponent,
-  Service,
-  eventListener,
-} from '@core/decorators';
+import { Component, IComponent } from '@core/decorators';
 
-@Service
-class MyService {
-  title: string = MyService.name;
-}
-
-@Component({ selector: 'app-root', dependencies: [MyService] })
+@Component({ selector: 'app-root', dependencies: [] })
 export class AppRootComponent implements IComponent {
-  title: string = 'AppRoot';
-
-  constructor(private service: MyService) {}
+  branch_name: string = 'main';
 
   get render(): string {
-    return `<h1>Hello from ${this.title}</h1>
-    <pre>tip: click on <span >header</span> to see it change</pre>`;
-  }
-  @eventListener('click') onclick() {
-    this.title = this.service.title;
+    return `<h1>This is ${this.branch_name} branch</h1>
+    <h3>Please refer to other branches like:</h3>
+    <ul>
+      <li>core</li>
+      <li>qqr</li>
+      <li>todo-list</li>
+    </ul>
+    `;
   }
 }

@@ -26,11 +26,12 @@ app-root {
   font-size: 0.8rem;
   contain: content;
   cursor: pointer;
-  pre {
-    text-wrap: wrap;
-    span {
-      font-family: 'Comfortaa';
-      font-weight: 700;
-    }
+  display: grid;
+
+  ul {
+    list-style: circle;
+    text-align: left;
+    display: grid;
+    gap: 0.5rem;
   }
 }
