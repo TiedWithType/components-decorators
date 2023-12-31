@@ -1,9 +1,11 @@
 {
-  "name": "node-starter",
+  "name": "components-decorators",
+  "version": "core",
+  "type": "module",
   "private": true,
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build": "tsc && vite build"
   },
   "devDependencies": {
     "sass": "^1.69.5",

@@ -1,11 +1,16 @@
 :root {
   font-family: 'Comfortaa', sans-serif;
   color: #212121;
+  -webkit-tap-highlight-color: transparent;
 
   @media (prefers-color-scheme: dark) {
     color: #fff;
     background-color: #212121;
   }
+}
+
+::selection {
+  background: transparent;
 }
 
 html,
