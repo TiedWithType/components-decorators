@@ -9,6 +9,14 @@ export type IComponent = {
 
 export const eventMap: (() => Promise<void>)[] = [];
 
+export const ComponentResolver = (component: Function): void => {
+  const ref = Reflect.construct(component, []);
+  const node = document.createElement(Reflect.get(ref, 'options').selector);
+
+  document.body.appendChild(node);
+  Component(Reflect.get(ref, 'options'))(component);
+};
+
 export const Component = (options: IComponentOptions): ClassDecorator => {
   return (target: Function): any => {
     try {
@@ -20,6 +28,7 @@ export const Component = (options: IComponentOptions): ClassDecorator => {
       );
       const proto: IComponent = target.prototype;
 
+      Reflect.set(proto, 'options', options);
       Reflect.set(proto, 'nodes', document.querySelectorAll(options.selector));
 
       Reflect.ownKeys(object).forEach((key: string | symbol): void => {
@@ -66,10 +75,11 @@ export const eventListener = (eventName: string): MethodDecorator => {
     const originalMethod: any = descriptor.value;
 
     descriptor.value = (..._args: any[]): void => {
-      if (Reflect.get(target, '__eventAttached')) return;
+      // if (Reflect.get(target, '__eventAttached')) return;
 
       Reflect.get(target, 'nodes').forEach((node: HTMLElement): void => {
-        Reflect.set(target, '__eventAttached', true);
+        if (Reflect.get(node, '__eventAttached')) return;
+        Reflect.set(node, '__eventAttached', true);
         node.addEventListener(eventName, (event: Event) => {
           originalMethod.apply(target, [event.target]);
           Reflect.set(node, 'innerHTML', Reflect.get(target, 'render'));
