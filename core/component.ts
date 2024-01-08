@@ -3,9 +3,18 @@ import { transformHTML, eventMap } from './utils';
 
 Reflect.set(window, 'CUSTOM_ELEMENT_SCHEMA', []);
 
+export const dynamicBootstrap = (component: Function): void => {
+  document.body.appendChild(
+    document.createElement(Reflect.get(component.prototype.options, 'selector'))
+  );
+
+  ComponentResolver(component);
+};
+
 export const ComponentResolver = (component: Function): void => {
-  const ref = Reflect.construct(component, []);
-  Component(Reflect.get(ref, 'options'))(component);
+  Component(Reflect.get(Reflect.construct(component, []), 'options'))(
+    component
+  );
 };
 
 export const Component = (options: IComponentOptions): ClassDecorator => {
@@ -57,19 +66,22 @@ export const Component = (options: IComponentOptions): ClassDecorator => {
       });
 
       const parser = () => {
-        const p: Document = new DOMParser().parseFromString(Reflect.get(proto, 'render_v2'), 'text/html');
+        const p: Document = new DOMParser().parseFromString(
+          Reflect.get(proto, 'render_v2'),
+          'text/html'
+        );
         const custom: any[] = Reflect.get(window, 'CUSTOM_ELEMENT_SCHEMA');
         const ch = Array.from(p.body.children);
-      
-        const match = custom.filter(c => ch.find(e => e.tagName === c.tag));
 
-        if(match.length > 0) {
-          match.forEach(el => {
-            ComponentResolver(el.proto.constructor)
-          })
+        const match = custom.filter((c) => ch.find((e) => e.tagName === c.tag));
+
+        if (match.length > 0) {
+          match.forEach((el) => {
+            ComponentResolver(el.proto.constructor);
+          });
         }
       };
-      
+
       parser();
 
       eventMap.forEach(
