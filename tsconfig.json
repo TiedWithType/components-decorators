@@ -12,7 +12,7 @@
     "useDefineForClassFields": false,
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["core/*"],
+      "@core/*": ["core/*", "core/component/*"],
       "@app/*": ["app/*"]
     }
   }

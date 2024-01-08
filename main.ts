@@ -1,4 +1,4 @@
-import {AppRootComponent} from '@app/app-root.component';
-import { dynamicBootstrap } from '@core/component';
+import { AppRootComponent } from '@app/app-root.component';
+import { componentBootstrap } from '@core/bootstrap';
 
-dynamicBootstrap(AppRootComponent)
+componentBootstrap(AppRootComponent);
