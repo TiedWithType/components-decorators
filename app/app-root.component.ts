@@ -15,7 +15,7 @@ export class Hello implements IComponent {
   constructor(private s: serv ) {}
 
   get render(): string {
-    return html`<h1>Hello ${this.s.age}!!!</h1>`;
+    return html`<h1>Hello 345 ${this.s.age}!!!</h1>`;
   }
 }
 
