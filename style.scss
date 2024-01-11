@@ -9,9 +9,9 @@
   }
 }
 
-::selection {
-  background: transparent;
-}
+// ::selection {
+//   background: transparent;
+// }
 
 html,
 body {
@@ -27,11 +27,4 @@ app-root {
   contain: content;
   cursor: pointer;
   display: grid;
-
-  ul {
-    list-style: circle;
-    text-align: left;
-    display: grid;
-    gap: 0.5rem;
-  }
 }
